@@ -467,6 +467,9 @@ def geneticAlgorithm(objectiveNrUsed, specialInitialSolutions, population, popSi
         print("Final best distance value: " + str(1/ rankRoutes(pop,1)[0][1]))
         print("Final best stress value: " + str(1/ rankRoutes(pop,2)[0][1]))
         bestRouteIndex = rankRoutes(pop,objectiveNrUsed)[0][0]
+        #print("City Numbers of Best Route")
+        #print(bestRouteIndex)
+        #print("---- ")
         bestRoute = pop[bestRouteIndex]
         #TODO (optional): ein festes Archiv vorsehen wie es im ursprünglichen SPEA2 vorgesehen ist
         # dann alle Lösungen ausgeben die im Archiv sind
@@ -477,7 +480,7 @@ def geneticAlgorithm(objectiveNrUsed, specialInitialSolutions, population, popSi
     
 
     
-    return bestRoute
+    return bestRoute,bestRouteIndizes
 
 #Running the genetic algorithm
 #Create list of cities
@@ -521,15 +524,15 @@ for nr in cityNumbersRoute1:
     route1.append(getCityBasedOnNr(cityList,nr))
     
 
-initialSolutionsList = []
+initialSolutionsList = [21, 8, 10, 19, 12, 14, 22, 4, 1, 15, 7, 2, 11, 5, 16, 23, 6, 17, 20, 25, 9, 18, 13, 3, 24]
 #TODO: Spezielle Intiallösungen der initialSolutionsList übergeben
     
 #Run the genetic algorithm
 #modify parameters popSize, eliteSize, mutationRate, generations to search for the best solution
 #modify objectiveNrUsed to use different objectives:
 # 1= Minimize distance, 2 = Minimize stress, 3 = MinimizeBoth
-bestRoute = geneticAlgorithm(objectiveNrUsed=3, specialInitialSolutions = initialSolutionsList, population=cityList,
-                             popSize=100, eliteSize=20, mutationRate=0.01, generations=500)
+bestRoute,initialSolutionsList2  = geneticAlgorithm(objectiveNrUsed=1, specialInitialSolutions = initialSolutionsList, population=cityList,
+                             popSize=100, eliteSize=20, mutationRate=0.005, generations=500)
 #print(bestRoute)
 
 #plotRoute(bestRoute, "Best final route")

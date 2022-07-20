@@ -15,6 +15,7 @@ import numpy as np, random, operator, pandas as pd, matplotlib.pyplot as plt
 #Create necessary classes and functions
 #Create class to handle "cities
 #Änderung von mir
+# Scheiße Änderung
 class City:
     def __init__(self, nr, traffic, x, y):
         self.nr = nr

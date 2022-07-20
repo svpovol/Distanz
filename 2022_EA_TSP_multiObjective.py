@@ -109,7 +109,7 @@ def createRoute(cityList):
 def initialPopulation(popSize, cityList, specialInitialSolutions):
     population = []
     
-    #TODO: Hinzufügen der speziellen Initiallösungen aus specialInitialSolutions
+    #TODO: (ERLEDIGT?) Hinzufügen der speziellen Initiallösungen aus specialInitialSolutions
     
 
     numberInitialSolutions = len(specialInitialSolutions)
@@ -480,7 +480,7 @@ def geneticAlgorithm(objectiveNrUsed, specialInitialSolutions, population, popSi
     
 
     
-    return bestRoute,bestRouteIndizes
+    return bestRoute #,bestRouteIndizes
 
 #Running the genetic algorithm
 #Create list of cities
@@ -531,8 +531,8 @@ initialSolutionsList = [21, 8, 10, 19, 12, 14, 22, 4, 1, 15, 7, 2, 11, 5, 16, 23
 #modify parameters popSize, eliteSize, mutationRate, generations to search for the best solution
 #modify objectiveNrUsed to use different objectives:
 # 1= Minimize distance, 2 = Minimize stress, 3 = MinimizeBoth
-bestRoute,initialSolutionsList2  = geneticAlgorithm(objectiveNrUsed=1, specialInitialSolutions = initialSolutionsList, population=cityList,
-                             popSize=100, eliteSize=20, mutationRate=0.005, generations=500)
+bestRoute = geneticAlgorithm(objectiveNrUsed=3, specialInitialSolutions = initialSolutionsList, population=cityList,
+                             popSize=100, eliteSize=20, mutationRate=0.001, generations=500)
 #print(bestRoute)
 
 #plotRoute(bestRoute, "Best final route")

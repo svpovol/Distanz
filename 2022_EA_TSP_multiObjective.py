@@ -107,16 +107,18 @@ def createRoute(cityList):
 
 #Create first "population" (list of routes)
 def initialPopulation(popSize, cityList, specialInitialSolutions):
-    population = []
+
     
     #TODO: (ERLEDIGT?) Hinzufügen der speziellen Initiallösungen aus specialInitialSolutions
-    
+    population = []
 
     numberInitialSolutions = len(specialInitialSolutions)
     print ("Number of special initial solutions:" + str(numberInitialSolutions))
-    #for i in range(0, popSize):
+    for i in range (numberInitialSolutions):
+        population.append(specialInitialSolutions[i])
     for i in range(numberInitialSolutions, popSize):
         population.append(createRoute(cityList))
+
     return population
 
 #Create the genetic algorithm
@@ -192,26 +194,51 @@ def computeEuclideanDistance(distanceA, distanceB, stressA, stressB):
 def selection(popRanked, eliteSize):
     selectionResults = []
     #TODO: Z.B. Turnierbasierte Selektion statt fitnessproportionaler Selektion
-    # roulette wheel by calculating a relative fitness weight for each individual
+    k = 43 #size of tournament
+    rounds = eliteSize #number of rounds
+    idx = 0
+    for r in range(rounds):
+       subset = random.choices(popRanked, k=k)
+       maxi = subset[0][1]
+       for i in range(len(subset)):
+           if subset[i][1] > maxi:
+               maxi = subset[i][1]
+               idx = i
+       selectionResults.append(subset[idx][0])
+    #roulette wheel by calculating a relative fitness weight for each individual
     df = pd.DataFrame(np.array(popRanked), columns=["Index","Fitness"])
     df['cum_sum'] = df.Fitness.cumsum()
     df['cum_perc'] = 100*df.cum_sum/df.Fitness.sum()
-    
-    #We’ll also want to hold on to our best routes, so we introduce elitism
-    for i in range(0, eliteSize):
-        selectionResults.append(popRanked[i][0])
-    #we compare a randomly drawn number to these weights to select our mating pool
-    for i in range(0, len(popRanked) - eliteSize):
-        pick = 100*random.random()
-        for i in range(0, len(popRanked)):
-            if pick <= df.iat[i,3]:
-                selectionResults.append(popRanked[i][0])
-                break
+
+    # #We’ll also want to hold on to our best routes, so we introduce elitism
+    # for i in range(0, eliteSize):
+    #     selectionResults.append(popRanked[i][0])
+    # #we compare a randomly drawn number to these weights to select our mating pool
+    # for i in range(0, len(popRanked) - eliteSize):
+    #     pick = 100*random.random()
+    #     for i in range(0, len(popRanked)):
+    #         if pick <= df.iat[i,3]:
+    #             selectionResults.append(popRanked[i][0])
+    #             break
     return selectionResults
     
 def selectionWithArchive(popRanked):
     selectionResults = []
-    #TODO: Z.B. Turnierbasierte Selektion statt fitnessproportionaler Selektion
+  #  TODO: Z.B. Turnierbasierte Selektion statt fitnessproportionaler Selektion
+    k = 43 #size of tournament
+    rounds = 10 #number of rounds
+    idx = 0
+    for r in range(rounds):
+       subset = random.choices(popRanked, k=k)
+       maxi = subset[0][1]
+       for i in range(len(subset)):
+           if subset[i][1] > maxi:
+               maxi = subset[i][1]
+               idx = i
+       #print("probe:", subset[idx][0])
+       selectionResults.append(subset[idx][0])
+
+    # roulette wheel by calculating a relative fitness weight for each individual
     # roulette wheel by calculating a relative fitness weight for each individual
     df = pd.DataFrame(np.array(popRanked), columns=["Index","Fitness"])
     df['cum_sum'] = df.Fitness.cumsum()
@@ -224,14 +251,15 @@ def selectionWithArchive(popRanked):
         if (popRanked[i][1] > 1):
             selectionResults.append(popRanked[i][0])
     currentArchiveSize = len(selectionResults)
-
-    #we compare a randomly drawn number to these weights to select our mating pool
+    #
+    # #we compare a randomly drawn number to these weights to select our mating pool
     for i in range(0, len(popRanked) - currentArchiveSize):
         pick = 100*random.random()
         for i in range(0, len(popRanked)):
             if pick <= df.iat[i,3]:
                 selectionResults.append(popRanked[i][0])
                 break
+
     return selectionResults
 
 #Create mating pool
@@ -422,7 +450,7 @@ def geneticAlgorithm(objectiveNrUsed, specialInitialSolutions, population, popSi
     
     #create new generations of populations
     for i in range(0, generations):
-        print(i, end=", ")
+        #print(i, end=", ")
         pop = nextGeneration(pop, eliteSize, mutationRate,objectiveNrUsed,archiveUsed)
         #store infos to plot progress when finished
         progressDistance.append(1 / rankRoutes(pop,1)[0][1])
@@ -522,10 +550,19 @@ cityNumbersRoute1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 
 route1 = []
 for nr in cityNumbersRoute1:
     route1.append(getCityBasedOnNr(cityList,nr))
-    
 
-initialSolutionsList = [21, 8, 10, 19, 12, 14, 22, 4, 1, 15, 7, 2, 11, 5, 16, 23, 6, 17, 20, 25, 9, 18, 13, 3, 24]
 #TODO: Spezielle Intiallösungen der initialSolutionsList übergeben
+route = [[21, 8, 10, 19, 12, 14, 22, 4, 1, 15, 7, 2, 11, 5, 16, 23, 6, 17, 20, 25, 9, 18, 13, 3, 24],
+         [20, 10, 5, 15, 11, 17, 22, 23, 6, 13, 1, 19, 12, 25, 9, 18, 3, 21, 7, 14, 2, 16, 8, 24, 4]]
+
+initialSolutionsList = []
+for j in range(len(route)):
+    r = []
+    for i in route[j]:
+        i = i-1
+        r.append(cityList[i])
+    initialSolutionsList.append(r)
+
     
 #Run the genetic algorithm
 #modify parameters popSize, eliteSize, mutationRate, generations to search for the best solution

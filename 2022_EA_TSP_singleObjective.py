@@ -102,6 +102,7 @@ class Fitness:
 #Route generator
 def createRoute(cityList):
     route = random.sample(cityList, len(cityList))
+    print("route: ",  route)
     return route
 
 #Create first "population" (list of routes)
@@ -110,6 +111,7 @@ def initialPopulation(popSize, cityList):
 
     for i in range(0, popSize):
         population.append(createRoute(cityList))
+    print("population: ", population)
     return population
 
 #Create the genetic algorithm
@@ -312,7 +314,7 @@ random.seed(1111)
 for i in range(1,26):
     cityList.append(City(nr= i, traffic=int(random.random()*40), x=int(random.random() * 200), y=int(random.random() * 200)))
     
-print(cityList)
+print("cityList: ", cityList)
 
 
 def plotRoute(cityList, title):
@@ -334,7 +336,7 @@ def plotRoute(cityList, title):
 #modify parameters popSize, eliteSize, mutationRate, generations to search for the best solution
 #modify objectiveNrUsed to use different objectives:
 # 1= Minimize distance, 2 = Minimize stress
-bestRoute = geneticAlgorithm(objectiveNrUsed=1, population=cityList, popSize=100, eliteSize=20, mutationRate=0.01, generations=500)
+bestRoute = geneticAlgorithm(objectiveNrUsed=1, population=cityList, popSize=100, eliteSize=20, mutationRate=0.005, generations=500)
 print(bestRoute)
 
 plotRoute(bestRoute, "Best final route")
